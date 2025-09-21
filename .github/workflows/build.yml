@@ -11,21 +11,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
+
+      # ✅ Node.js 环境 (必须，否则 npm run build 找不到 vite)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.10'
-      - name: Install deps
-        run: |
-          pip install fastapi uvicorn pyinstaller
+          node-version: 18
+
       - name: Build frontend
         run: |
           cd frontend
-          npm install
-          npm run build
+          npm ci   # 推荐用 ci，保证和 package-lock.json 一致
+          npx vite build  # 用 npx 确保 vite 可执行
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
       - name: Package backend
         run: |
           pyinstaller myapp.spec
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -38,21 +50,32 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python
-        uses: actions/setup-python@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          python-version: '3.10'
-      - name: Install deps
-        run: |
-          pip install fastapi uvicorn pyinstaller
+          node-version: 18
+
       - name: Build frontend
         run: |
           cd frontend
-          npm install
-          npm run build
+          npm ci
+          npx vite build
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          pip install pyinstaller
+
       - name: Package backend
         run: |
           pyinstaller myapp.spec
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
