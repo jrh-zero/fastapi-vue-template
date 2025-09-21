@@ -1,0 +1,58 @@
+name: Build FastAPI + Vue
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install deps
+        run: |
+          pip install fastapi uvicorn pyinstaller
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+      - name: Package backend
+        run: |
+          pyinstaller myapp.spec
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: fastapi-vue-linux
+          path: dist/myapp/*
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install deps
+        run: |
+          pip install fastapi uvicorn pyinstaller
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm install
+          npm run build
+      - name: Package backend
+        run: |
+          pyinstaller myapp.spec
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: fastapi-vue-windows
+          path: dist/myapp/*
