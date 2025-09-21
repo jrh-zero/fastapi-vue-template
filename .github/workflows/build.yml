@@ -27,10 +27,12 @@ jobs:
         run: |
           pyinstaller myapp.spec
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: fastapi-vue-linux
           path: dist/myapp/*
+          if-no-files-found: error
+          retention-days: 7
 
   build-windows:
     runs-on: windows-latest
@@ -52,7 +54,9 @@ jobs:
         run: |
           pyinstaller myapp.spec
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: fastapi-vue-windows
           path: dist/myapp/*
+          if-no-files-found: error
+          retention-days: 7
