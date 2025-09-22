@@ -83,6 +83,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: fastapi-vue-windows
-          path: dist/myapp/*
+          path: dist/*
           if-no-files-found: error
           retention-days: 7
